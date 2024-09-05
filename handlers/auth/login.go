@@ -37,7 +37,7 @@ func Login(c *fiber.Ctx) error {
 	query, err := utils.CheckIfUserExistsByEmail(user.Email)
 
 	if err != nil {
-		return c.JSON(RegisterResponse{
+		return c.JSON(LoginResponse{
 			Code:    400,
 			Message: "Invalid password or email.",
 		})
@@ -47,22 +47,33 @@ func Login(c *fiber.Ctx) error {
 	compare, err := argon2id.ComparePasswordAndHash(user.Password, query.Password)
 
 	if err != nil {
-		return c.JSON(RegisterResponse{
+		return c.JSON(LoginResponse{
 			Code:    500,
 			Message: "Unable to verify hash.",
 		})
 	}
 
 	if !compare {
-		return c.JSON(RegisterResponse{
+		return c.JSON(LoginResponse{
 			Code:    400,
 			Message: "Invalid password or email.",
 		})
 	}
 
-	return c.JSON(RegisterResponse{
+	// create token
+	jwt, err := utils.CreateJWT(user.Email)
+
+	if err != nil {
+		return c.JSON(LoginResponse{
+			Code:    500,
+			Message: "Unable to create token.",
+		})
+	}
+
+	return c.JSON(LoginResponse{
 		Code:    200,
 		Message: "Logged in successfully.",
+		Token:   jwt,
 	})
 
 }
