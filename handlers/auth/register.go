@@ -3,6 +3,7 @@ package auth
 import (
 	"mango/db"
 	"mango/utils"
+	"strings"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
@@ -25,10 +26,13 @@ func Register(c *fiber.Ctx) error {
 	// parse body
 	if err := c.BodyParser(&user); err != nil {
 		return c.JSON(RegisterResponse{
-			Code:    400,
+			Code:    500,
 			Message: "Error parsing form.",
 		})
 	}
+
+	// normalize email
+	user.Email = strings.ToLower(strings.TrimSpace(user.Email))
 
 	// check length requirements
 	if len(user.Password) < 8 {
@@ -68,17 +72,26 @@ func Register(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.JSON(RegisterResponse{
-			Code:    400,
+			Code:    500,
 			Message: "Unable to create hash.",
 		})
 	}
 
 	// create user
-	db.DB.Create(&db.User{
+	newUser := &db.User{
 		ID:       cuid2.Generate(),
 		Email:    user.Email,
 		Password: hash,
-	})
+	}
+
+	query := db.DB.Create(newUser)
+
+	if query.Error != nil {
+		return c.JSON(RegisterResponse{
+			Code:    500,
+			Message: "Unable to create new user.",
+		})
+	}
 
 	return c.JSON(RegisterResponse{
 		Code:    200,

@@ -2,6 +2,7 @@ package auth
 
 import (
 	"mango/utils"
+	"strings"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
@@ -24,10 +25,13 @@ func Login(c *fiber.Ctx) error {
 	// parse body
 	if err := c.BodyParser(&user); err != nil {
 		return c.JSON(LoginResponse{
-			Code:    400,
+			Code:    500,
 			Message: "Error parsing form.",
 		})
 	}
+
+	// normalize email
+	user.Email = strings.ToLower(strings.TrimSpace(user.Email))
 
 	// check if user exists by email
 	query, err := utils.CheckIfUserExistsByEmail(user.Email)
@@ -44,7 +48,7 @@ func Login(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.JSON(RegisterResponse{
-			Code:    400,
+			Code:    500,
 			Message: "Unable to verify hash.",
 		})
 	}
