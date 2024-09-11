@@ -15,9 +15,6 @@ const config = {
 			pages: "../backend/public",
 			assets: "../backend/public",
 		})
-	},
-	compilerOptions: {
-		runes: true
 	}
 };
 

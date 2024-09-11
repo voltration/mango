@@ -1,7 +1,8 @@
 <script>
     import "../app.css";
-
-    let { children } = $props();
+    
+    import '@fontsource/bebas-neue';
+    import '@fontsource-variable/inter';
 </script>
 
-{@render children()}
+<slot></slot>
