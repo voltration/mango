@@ -3,6 +3,7 @@ package auth
 import (
 	"mango/utils"
 	"strings"
+	"time"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +17,6 @@ type LoginRequest struct {
 type LoginResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
-	Token   string `json:"token,omitempty"`
 }
 
 func Login(c *fiber.Ctx) error {
@@ -70,10 +70,18 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	c.Cookie(&fiber.Cookie{
+		Name:     "jwt",
+		Value:    jwt,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HTTPOnly: true,
+		//Secure:   true, // Set to true if using HTTPS
+		SameSite: "Strict",
+	})
+
 	return c.JSON(LoginResponse{
 		Code:    200,
 		Message: "Logged in successfully.",
-		Token:   jwt,
 	})
 
 }
