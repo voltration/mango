@@ -1,19 +1,29 @@
 <script>
     import ky from "ky";
+    import { toast } from "svelte-sonner";
+    import Eye from "lucide-svelte/icons/eye";
 
+    let isRequestingLogin = false;
+    let showPassword = false;
     let user = {
         email: "",
         password: "",
     }
 
     async function register() {
+        isRequestingLogin = true;
+        
         const res = await ky.post("http://localhost:3000/auth/register", {
             json: user
         }).json();
 
-        console.log(res);
+        if (res.code == 200) toast.success(res.message);
+        else toast.error(res.message);
+
+        isRequestingLogin = false;
     }
 </script>
+
 <div class="flex items-center justify-center h-screen">
     <div class="relative">
         <div class="absolute -inset-2 rounded-lg bg-gradient-to-tr from-mango to-go blur-xl"></div>
@@ -23,14 +33,27 @@
                 <div class="flex flex-col items-center gap-8 w-full">
                     <div class="flex flex-col gap-1 w-[75%]">
                         <label class="inter text-neutral-600" for="email">Email</label>
-                        <input class="inter focus:shadow-black/15 ease-in-out duration-300 text-neutral-600 w-full px-2 py-1 shadow shadow-black/0 bg-neutral-200/50 outline-none rounded-md border border-neutral-400" bind:value={user.email} type="email" name="email">
+                        <input class="shadow shadow-black/5 ease-in-out duration-300 text-neutral-600 w-full px-2 py-1 bg-neutral-200/50 outline-none rounded-md border border-neutral-400" bind:value={user.email} type="email" name="email">
                     </div>
                     <div class="flex flex-col gap-1 w-[75%]">
                         <label class="inter text-neutral-600" for="password">Password</label>
-                        <input class="inter focus:shadow-black/15 ease-in-out duration-300 text-neutral-600 w-full px-2 py-1 shadow shadow-black/0 bg-neutral-200/50 outline-none rounded-md border border-neutral-400" bind:value={user.password} type="password" name="password">
+                        <div class="shadow shadow-black/5 text-neutral-600 w-full flex flex-row items-center bg-neutral-200/50 border border-neutral-400 px-2 py-1 rounded-md">
+                            <input class="inter text-neutral-600 bg-transparent w-full outline-none" type={showPassword ? "text" : "password"} name="password">
+                            <button 
+                                on:mousedown={() => showPassword = true}
+                                on:mouseup={() => showPassword = false}
+                                on:mouseleave={() => showPassword = false}
+                            >
+                                <Eye class="hover:text-neutral-600 ease-in-out duration-200 cursor-pointer text-neutral-500" />
+                            </button>
+                        </div>
                     </div>
                     <div class="flex flex-col gap-2 w-[75%]">
-                        <button on:click={register} class="hover:bg-mango/90 ease-in-out duration-300 w-full bg-mango p-2 text-white inter font-medium rounded-full border-2 border-black/5">Sign In</button>
+                        {#if isRequestingLogin}
+                            <button on:click={register} disabled class="hover:bg-mango/90 pulse ease-in-out duration-300 w-full bg-mango p-2 text-white inter font-medium rounded-full border-2 border-black/5">Sign Up</button>
+                        {:else}
+                            <button on:click={register} class="hover:bg-mango/90 ease-in-out duration-300 w-full bg-mango p-2 text-white inter font-medium rounded-full border-2 border-black/5">Sign Up</button>
+                        {/if}
                         <div class="flex flex-row items-center justify-between">
                             <a href="/recovery" class="hover:text-mango ease-in-out duration-200 inter font-normal text-neutral-500">recover account</a>
                             <p class="inter font-normal text-neutral-300">/</p>
