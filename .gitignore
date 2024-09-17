@@ -1,0 +1,115 @@
+# Git ignore file for Go and SvelteKit projects
+
+# =====================
+# General Ignored Files
+# =====================
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+
+# =====================
+# Go Project Ignored Files
+# =====================
+
+# Compiled executable files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Go build output directories
+/bin/
+/dist/
+/build/
+
+# Coverage files
+coverage.out
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.old
+
+# Vendor directory (if using vendoring)
+vendor/
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+
+# =====================
+# SvelteKit Project Ignored Files
+# =====================
+
+# Node modules
+frontend/node_modules/
+
+# SvelteKit build directory
+frontend/.svelte-kit/
+
+# Vite cache
+frontend/.vite/
+
+# Bun cache (if using Bun as the package manager)
+frontend/.bun/
+
+# Build output directories
+frontend/build/
+frontend/dist/
+frontend/public/build/
+
+# Static assets generated at build time
+frontend/public/build/
+
+# Temp files
+frontend/.tmp/
+frontend/.cache/
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# IDE and Editor files
+frontend/.idea/
+frontend/.vscode/
+frontend/*.swp
+
+# =====================
+# Backend Ignored Files
+# =====================
+
+# Public directory (if generated during build and not containing source code)
+backend/public/
+
+# Compiled binaries
+backend/*.exe
+backend/*.exe~
+backend/*.dll
+backend/*.so
+backend/*.dylib
+
+# Logs
+backend/*.log
+
+# =====================
+# Others
+# =====================
+
+# Environment variables file
+.env
+.env.local
+.env.*.local
