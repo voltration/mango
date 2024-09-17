@@ -1,7 +1,14 @@
-# Ignore executables
+# Ignore all files
 *
-!*.*
+
+# But not directories
 !*/
+
+# And not files with extensions
+!*.*
+
+# But do ignore .exe files
+*.exe
 
 # Ignore backend/public directory
 /backend/public/
